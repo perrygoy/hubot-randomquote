@@ -1,0 +1,34 @@
+{
+  "author": {
+    "email": "perry.goy@gmail.com",
+    "name": "Perry Goy"
+  },
+  "bugs": {
+    "url": "https://github.com/perrygoy/hubot-randomquote/issues"
+  },
+  "contributors": [
+    {
+      "email": "perry.goy@gmail.com",
+      "name": "Perry Goy"
+    }
+  ],
+  "description": "Store and retrieve random quotes!",
+  "homepage": "https://github.com/perrygoy/hubot-randomquote#readme",
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "quotes",
+    "random"
+  ],
+  "license": "ISC",
+  "main": "index.coffee",
+  "name": "hubot-randomquote",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perrygoy/hubot-randomquote.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}
