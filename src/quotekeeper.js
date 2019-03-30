@@ -17,6 +17,11 @@ module.exports = function(robot) {
     }];
   };
 
+  this.save = (quotes) => {
+    robot.brain.data.randomquotes = quotes;
+    robot.brain.emit('save', robot.brain.data);
+  };
+
   this.addQuote = (quote, author) => {
     let quotes = this.getQuotes();
     let numQuotes = quotes.push({"quote": quote, "author": author, "submitter": submitter});
