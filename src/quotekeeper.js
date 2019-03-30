@@ -11,7 +11,10 @@ function randomInt(max_ind) {
 module.exports = function(robot) {
 
   this.getQuotes = () => {
-    return robot.brain.data.randomquotes || [{"quote": "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`."}];
+    return robot.brain.data.randomquotes || [{
+      "quote": "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
+      "author": "hubot-randomquote"
+    }];
   };
 
   this.addQuote = (quote, author) => {
@@ -40,7 +43,7 @@ module.exports = function(robot) {
     let index = randomInt(quotes.length);
     let quote = Object.assign({}, quotes[index]);
 
-    quote.index = index;
+    quote.index = index + 1;
     return quote
   };
 
