@@ -22,7 +22,7 @@ module.exports = function(robot) {
     robot.brain.emit('save', robot.brain.data);
   };
 
-  this.addQuote = (quote, author) => {
+  this.addQuote = (quote, author, submitter) => {
     let quotes = this.getQuotes();
     let numQuotes = quotes.push({"quote": quote, "author": author, "submitter": submitter});
 
