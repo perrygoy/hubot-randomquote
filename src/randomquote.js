@@ -60,8 +60,8 @@ module.exports = function(robot) {
 
 
   robot.hear(/removequote (\d+)/i), response => {
-    let index = response.match[1];
-    if (+index <= 0) {
+    let index = Number(response.match[1]);
+    if (index <= 0) {
         response.send("That number is too low. Nice try!");
         return;
     }
