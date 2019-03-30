@@ -40,8 +40,9 @@ module.exports = function(robot) {
 
   this.getRandomQuote = () => {
     let quotes = this.getQuotes();
-    if (quotes.length == 0):
+    if (quotes.length == 0) {
       return null;
+    }
     let index = randomInt(quotes.length);
     let quote = Object.assign({}, quotes[index]);
 
