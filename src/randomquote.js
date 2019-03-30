@@ -71,7 +71,7 @@ module.exports = function(robot) {
   };
 
 
-  robot.hear(/quote$/i), response => {
+  robot.hear(/quote(?: me)?$/i), response => {
     let quote = this.retrieveQuote();
     response.send(`Quote #${quote.index}: "${quote.quote}" —${quote.author}`);
   };
