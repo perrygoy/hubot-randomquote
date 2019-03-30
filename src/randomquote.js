@@ -33,11 +33,11 @@ module.exports = function(robot) {
   };
 
   this.addQuote = (quote, author) => {
-    return QuoteKeeper.add({"quote": quote, "author": author});
+    return QuoteKeeper.addQuote({"quote": quote, "author": author});
   };
 
   this.removeQuote = (index) => {
-    return QuoteKeeper.remove(index);
+    return QuoteKeeper.removeQuote(index);
   };
 
   this.retrieveQuote = () => {
@@ -73,7 +73,11 @@ module.exports = function(robot) {
 
   robot.hear(/quote(?: me)?$/i, response => {
     let quote = this.retrieveQuote();
-    response.send(`*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${quote.author}`);
+    if (quote === null) {
+        response.send("I don't know any quotes yet! Add some more by using `addquote`.");
+    } else {
+        response.send(`*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${quote.author}`);
+    }
   });
 
 };
