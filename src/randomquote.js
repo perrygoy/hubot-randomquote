@@ -45,7 +45,7 @@ module.exports = function(robot) {
   };
 
 
-  robot.hear(/addquote "?(.+?)"?(?: by (.*))/i), response => {
+  robot.hear(/addquote "?(.+?)"?(?: by (.*))/i, response => {
     let quote = response.match[1];
     if (response.match.length > 2) {
       let user = response.match[2];
@@ -56,10 +56,10 @@ module.exports = function(robot) {
 
     let numQuotes = this.addQuote(quote, author, submitter);
     response.send(`OK, added! Total quotes stored: ${numQuotes}`);
-  };
+  });
 
 
-  robot.hear(/removequote (\d+)/i), response => {
+  robot.hear(/removequote (\d+)/i, response => {
     let index = Number(response.match[1]);
     if (index <= 0) {
         response.send("That number is too low. Nice try!");
@@ -68,12 +68,12 @@ module.exports = function(robot) {
 
     let numQuotes = this.removeQuote(index);
     response.send(`OK, stricken! Total quotes remaining: ${numQuotes}`);
-  };
+  });
 
 
-  robot.hear(/quote(?: me)?$/i), response => {
+  robot.hear(/quote(?: me)?$/i, response => {
     let quote = this.retrieveQuote();
     response.send(`Quote #${quote.index}: "${quote.quote}" —${quote.author}`);
-  };
+  });
 
 };
