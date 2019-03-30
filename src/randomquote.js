@@ -47,10 +47,9 @@ module.exports = function(robot) {
 
   robot.hear(/addquote "?(.+?)"?(?: by (.*))/i, response => {
     let quote = response.match[1];
+    let author = "_anonymous_";
     if (response.match.length > 2) {
       let author = response.match[2];
-    } else {
-      let author = "_anonymous_";
     }
     let submitter = this.getUsername(response);
 
