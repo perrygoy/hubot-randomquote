@@ -49,7 +49,7 @@ module.exports = function(robot) {
     let quote = response.match[1];
     let author = "_anonymous_";
     if (response.match.length > 2) {
-      let author = response.match[2];
+      author = response.match[2];
     }
     let submitter = this.getUsername(response);
 
