@@ -23,7 +23,7 @@ module.exports = function(robot) {
 
   const QuoteKeeper = new QuotesMod(robot);
 
-  this.getUsername = (response) => {
+  this.getUsername = response => {
     const user = response.message.user;
     if (user.profile) {
         return user.profile.display_name || user.name;
@@ -32,11 +32,11 @@ module.exports = function(robot) {
     }
   };
 
-  this.addQuote = (quote, author) => {
-    return QuoteKeeper.addQuote({"quote": quote, "author": author});
+  this.addQuote = (quote, author, submitter) => {
+    return QuoteKeeper.addQuote(quote, author, submitter);
   };
 
-  this.removeQuote = (index) => {
+  this.removeQuote = index => {
     return QuoteKeeper.removeQuote(index);
   };
 
