@@ -5,6 +5,9 @@
 //   quotes, out of context quotes, funny quotes, thought-provoking quotes,
 //   you decide! If you later change your mind, you can delete them, too.
 //
+// Configuration:
+//   HUBOT_RANDOMQUOTE_LENGTH - how long the quotes can be. Default is 140.
+//
 // Commands:
 //   hubot addquote {quote} [by {user}] - adds the given quote to betsbot,
 //       crediting the user, or anonymously if no user is given.
@@ -17,7 +20,7 @@
 
 
 const QuotesMod = require('./quotekeeper')
-
+const QUOTE_MAXLENGTH = process.env.HUBOT_RANDOMQUOTE_LENGTH || 140;
 
 module.exports = function(robot) {
 
@@ -62,7 +65,7 @@ module.exports = function(robot) {
         let submitter = this.getUsername(response);
 
         if (quote.length > 140) {
-            response.send(`Sorry friend, that quote is too long at ${quote.length} characters. I can only remember 140 at max.`);
+            response.send(`Sorry friend, that quote is too long at ${quote.length} characters. I can only remember ${QUOTE_MAXLENGTH} characters maximum.`);
             return;
         }
 

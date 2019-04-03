@@ -13,11 +13,16 @@ Any quotes will do. Quote your friends, quote your loved ones, quote your favori
     > OK, stricken! Total quotes remaining: 0
 
 ## Commands
+
 * hubot addquote {quote} [by {user}] - adds the given quote to betsbot, crediting the user, or anonymously if no user is given.
 * hubot removequote {number} - quotes are labeled with a number. If you want to remove a quote, you can do so using that number.
 * hubot quote - get a random quote!
 
 Uses hubot-brain to keep track of the quotes.
+
+## Configuration
+
+You can set the maximum length for the quotes stored by hubot using the environment variable `HUBOT_RANDOMQUOTE_LENGTH`. The default is 140.
 
 ## Add it to your hubot!
 
