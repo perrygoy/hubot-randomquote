@@ -10,6 +10,10 @@
     {
       "email": "perry.goy@gmail.com",
       "name": "Perry Goy"
+    },
+    {
+      "email": "matthew.erickson.13@gmail.com",
+      "name": "Matthew Erickson"
     }
   ],
   "description": "Store and retrieve random quotes!",
