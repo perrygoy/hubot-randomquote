@@ -61,6 +61,11 @@ module.exports = function(robot) {
         }
         let submitter = this.getUsername(response);
 
+        if (quote.length > 140) {
+            response.send(`Sorry friend, that quote is too long at ${quote.length} characters. I can only remember 140 at max.`);
+            return;
+        }
+
         let numQuotes = this.addQuote(quote, author, submitter);
         response.send(`OK, added! Total quotes stored: ${numQuotes}`);
     });
