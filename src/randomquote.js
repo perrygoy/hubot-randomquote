@@ -53,7 +53,7 @@ module.exports = function(robot) {
     };
 
 
-    robot.hear(/addquote ["“”]?(.+?)["“”]?(?: by (.*))/i, response => {
+    robot.respond(/addquote ["“”]?(.+?)["“”]?(?: by (.*))/i, response => {
         let quote = response.match[1];
         let author = "_anonymous_";
         if (response.match.length > 2) {
@@ -66,7 +66,7 @@ module.exports = function(robot) {
     });
 
 
-    robot.hear(/removequote (\d+)/i, response => {
+    robot.respond(/removequote (\d+)/i, response => {
         let index = Number(response.match[1]);
         if (index <= 0) {
             response.send("That number is too low. Nice try!");
@@ -79,7 +79,7 @@ module.exports = function(robot) {
     });
 
 
-    robot.hear(/quote(?: me)?(?: (\d+))?$/i, response => {
+    robot.respond(/quote(?: me)?(?: (\d+))?$/i, response => {
         let index = false;
         if (response.match.length > 1) {
             index = Number(response.match[1]);
