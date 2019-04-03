@@ -32,6 +32,10 @@ module.exports = function(robot) {
         }
     };
 
+    this.stripTag = name => {
+        return (name[0] === '@' ? name.slice(1) : name);
+    };
+
     this.addQuote = (quote, author, submitter) => {
         return QuoteKeeper.addQuote(quote, author, submitter);
     };
@@ -53,7 +57,7 @@ module.exports = function(robot) {
         let quote = response.match[1];
         let author = "_anonymous_";
         if (response.match.length > 2) {
-            author = response.match[2];
+            author = this.stripTag(response.match[2]);
         }
         let submitter = this.getUsername(response);
 
