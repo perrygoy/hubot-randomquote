@@ -21,62 +21,72 @@ const QuotesMod = require('./quotekeeper')
 
 module.exports = function(robot) {
 
-  const QuoteKeeper = new QuotesMod(robot);
+    const QuoteKeeper = new QuotesMod(robot);
 
-  this.getUsername = response => {
-    const user = response.message.user;
-    if (user.profile) {
-        return user.profile.display_name || user.name;
-    } else {
-        return user.name;
-    }
-  };
+    this.getUsername = response => {
+        const user = response.message.user;
+        if (user.profile) {
+            return user.profile.display_name || user.name;
+        } else {
+            return user.name;
+        }
+    };
 
-  this.addQuote = (quote, author, submitter) => {
-    return QuoteKeeper.addQuote(quote, author, submitter);
-  };
+    this.addQuote = (quote, author, submitter) => {
+        return QuoteKeeper.addQuote(quote, author, submitter);
+    };
 
-  this.removeQuote = index => {
-    return QuoteKeeper.removeQuote(index);
-  };
+    this.removeQuote = index => {
+        return QuoteKeeper.removeQuote(index);
+    };
 
-  this.retrieveQuote = () => {
-    return QuoteKeeper.getRandomQuote();
-  };
-
-
-  robot.hear(/addquote "?(.+?)"?(?: by (.*))/i, response => {
-    let quote = response.match[1];
-    let author = "_anonymous_";
-    if (response.match.length > 2) {
-      author = response.match[2];
-    }
-    let submitter = this.getUsername(response);
-
-    let numQuotes = this.addQuote(quote, author, submitter);
-    response.send(`OK, added! Total quotes stored: ${numQuotes}`);
-  });
+    this.retrieveQuote = (index = false) => {
+        if (index) {
+            return QuoteKeeper.getQuote(index);
+        } else {
+            return QuoteKeeper.getRandomQuote();
+        }
+    };
 
 
-  robot.hear(/removequote (\d+)/i, response => {
-    let index = Number(response.match[1]);
-    if (index <= 0) {
-        response.send("That number is too low. Nice try!");
-        return;
-    }
+    robot.hear(/addquote ["“”]?(.+?)["“”]?(?: by (.*))/i, response => {
+        let quote = response.match[1];
+        let author = "_anonymous_";
+        if (response.match.length > 2) {
+            author = response.match[2];
+        }
+        let submitter = this.getUsername(response);
 
-    let numQuotes = this.removeQuote(index);
-    response.send(`OK, stricken! Total quotes remaining: ${numQuotes}`);
-  });
+        let numQuotes = this.addQuote(quote, author, submitter);
+        response.send(`OK, added! Total quotes stored: ${numQuotes}`);
+    });
 
 
-  robot.hear(/quote(?: me)?$/i, response => {
-    let quote = this.retrieveQuote();
-    if (quote === null) {
-        response.send("I don't know any quotes yet! Add some more by using `addquote`.");
-    } else {
-        response.send(`*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${quote.author}`);
-    }
-  });
+    robot.hear(/removequote (\d+)/i, response => {
+        let index = Number(response.match[1]);
+        if (index <= 0) {
+            response.send("That number is too low. Nice try!");
+            return;
+        }
+
+        let numQuotes = this.getNumQuotes();
+        let quote = this.removeQuote(index);
+        response.send(`OK, stricken! "${quote.quote}" is gone. Total quotes remaining: ${numQuotes}`);
+    });
+
+
+    robot.hear(/quote(?: me)?(?: (\d+))?$/i, response => {
+        let index = false;
+        if (response.match.length > 1) {
+            index = Number(response.match[1]);
+        }
+        let quote = this.retrieveQuote(index);
+        if (quote === null) {
+            let numQuotes = this.getNumQuotes();
+            response.send(`Sorry, I can't map that index to a quote. I currently know ${numQuotes} quotes.`);
+        } else {
+            response.send(`*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${quote.author}`);
+        }
+    });
 
 };

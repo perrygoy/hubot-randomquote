@@ -10,49 +10,61 @@ function randomInt(max_ind) {
 
 module.exports = function(robot) {
 
-  this.getQuotes = () => {
-    return robot.brain.data.randomquotes || [{
-      "quote": "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
-      "author": "hubot-randomquote"
-    }];
-  };
+    this.getQuotes = () => {
+        return robot.brain.data.randomquotes || [{
+            "quote": "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
+            "author": "hubot-randomquote"
+        }];
+    };
 
-  this.save = (quotes) => {
-    robot.brain.data.randomquotes = quotes;
-    robot.brain.emit('save', robot.brain.data);
-  };
+    this.getNumQuotes = () => {
+        return this.getQuotes().length;
+    };
 
-  this.addQuote = (quote, author, submitter) => {
-    let quotes = this.getQuotes();
-    let numQuotes = quotes.push({"quote": quote, "author": author, "submitter": submitter});
+    this.save = quotes => {
+        robot.brain.data.randomquotes = quotes;
+        robot.brain.emit('save', robot.brain.data);
+    };
 
-    this.save(quotes);
+    this.addQuote = (quote, author, submitter) => {
+        let quotes = this.getQuotes();
+        let numQuotes = quotes.push({"quote": quote, "author": author, "submitter": submitter});
 
-    return numQuotes;
-  };
+        this.save(quotes);
+        return numQuotes;
+    };
 
-  this.removeQuote = (index) => {
-    if (index <= 0) {
-      return;
-    }
-    let quotes = this.getQuotes();
-    quotes.splice(index - 1, 1);
+    this.removeQuote = index => {
+        if (index <= 0) {
+            return;
+        }
+        let quotes = this.getQuotes();
+        let quote = quotes[index - 1];
+        quotes.splice(index - 1, 1);
 
-    this.save(quotes);
+        this.save(quotes);
+        return quote;
+    };
 
-    return quotes.length;
-  };
+    this.getRandomQuote = () => {
+        let quotes = this.getQuotes();
+        if (quotes.length == 0) {
+            return null;
+        }
+        let index = randomInt(quotes.length);
+        let quote = Object.assign({}, quotes[index]);
 
-  this.getRandomQuote = () => {
-    let quotes = this.getQuotes();
-    if (quotes.length == 0) {
-      return null;
-    }
-    let index = randomInt(quotes.length);
-    let quote = Object.assign({}, quotes[index]);
+        quote.index = index + 1;
+        return quote;
+    };
 
-    quote.index = index + 1;
-    return quote
-  };
-
+    this.getQuote = index => {
+        const quotes = this.getQuotes();
+        if (index <= 0 || index > quotes.length) {
+            return null;
+        }
+        let quote = Object.assign({}, quotes[index - 1]);
+        quote.index = index;
+        return quote;
+    };
 };
