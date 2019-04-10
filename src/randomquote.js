@@ -13,7 +13,10 @@
 //       crediting the user, or anonymously if no user is given.
 //   hubot removequote {number} - quotes are labeled with a number. If you
 //       later decide to remove a quote, you can do so from that number.
-//   hubot quote - get a random quote!
+//   hubot quote {number, author, or nothing} - get a random quote! If a
+//       number was supplied, get that specific quote. If an author was
+//       supplied, get a random quote by that author.
+//   hubot quotestats - show some nifty stats about the stored quotes!
 //
 // Author:
 //   Perry Goy https://github.com/perrygoy
@@ -57,6 +60,9 @@ module.exports = function(robot) {
         }
     };
 
+    this.retrieveQuoteStats = () => {
+        return QuoteKeeper.getQuoteStats();
+    };
 
     robot.respond(/addquote ["“”]?(.+?)["“”]?(?: by (.*))/i, response => {
         let quote = response.match[1];
@@ -101,6 +107,19 @@ module.exports = function(robot) {
         } else {
             response.send(`*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${quote.author}`);
         }
+    });
+
+
+    robot.respond(/quotestats$/i, response => {
+        const stats = this.retrieveQuoteStats();
+        let message = '_Quote Repository Stats_:\n';
+        message += `>*Total Quotes*: ${stats.totalQuotes}\n`;
+        message += `>*Authors*: ${stats.authors}\n`;
+        message += `>  - *Most Quoted*: ${stats.mostQuotes.name}, ${stats.mostQuotes.number} quotes!\n`;
+        message += `>*Submitters*: ${stats.submitters}\n`;
+        message += `>  - *Most Submitted*: ${stats.mostSubmissions.name}, ${stats.mostSubmissions.number} quotes!\n`;
+
+        response.send(message);
     });
 
 };

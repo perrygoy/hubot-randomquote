@@ -7,14 +7,20 @@ function randomInt(max_ind) {
     return Math.floor(Math.random() * max_ind);
 };
 
+function mode(array) {
+    return array.reduce(
+        (a, b, index, array) =>
+        (array.filter(v => v === a).length >= array.filter(v => v === b).length ? a : b)
+    );
+};
 
 module.exports = function(robot) {
 
     this.getQuotes = () => {
         return robot.brain.data.randomquotes || [{
-            "quote": "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
-            "author": "hubot-randomquote",
-            "submitter": "hubot-randomquote"
+            quote: "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
+            author: "hubot-randomquote",
+            submitter: "hubot-randomquote"
         }];
     };
 
@@ -29,7 +35,7 @@ module.exports = function(robot) {
 
     this.addQuote = (quote, author, submitter) => {
         let quotes = this.getQuotes();
-        let numQuotes = quotes.push({"quote": quote, "author": author, "submitter": submitter});
+        let numQuotes = quotes.push({quote: quote, author: author, submitter: submitter});
 
         this.save(quotes);
         return numQuotes;
@@ -77,5 +83,27 @@ module.exports = function(robot) {
 
         let index = randomInt(author_quotes.length);
         return this.getQuote(index);
+    };
+
+    this.getQuoteStats = () => {
+        const quotes = this.getQuotes();
+        const authors = quotes.map(quote => quote.author);
+        const mostQuotes = mode(authors);
+        const submitters = quotes.map(quote => quote.submitter);
+        const mostSubmissions = mode(submitters);
+
+        return {
+            totalQuotes: quotes.length,
+            authors: [...new Set(authors)],
+            submitters: [...new Set(submitters)],
+            mostQuotes: {
+                name: mostQuotes,
+                number: authors.count(mostQuotes),
+            },
+            mostSubmissions: {
+                name: mostSubmissions,
+                number: submitters.count(mostSubmissions,)
+            },
+        };
     };
 };
