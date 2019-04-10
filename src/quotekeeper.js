@@ -53,8 +53,10 @@ module.exports = function(robot) {
         return quote;
     };
 
-    this.getQuote = index => {
-        const quotes = this.getQuotes();
+    this.getQuote = (index, quotes = null) => {
+        if (quotes === null) {
+            quotes = this.getQuotes();
+        }
         let quote = Object.assign({}, quotes[index]);
         quote.index = index + 1;
         return quote;
@@ -85,7 +87,7 @@ module.exports = function(robot) {
         const author_quotes = quotes.filter(quote => quote.author == author)
 
         let index = randomInt(author_quotes.length);
-        return this.getQuote(index);
+        return this.getQuote(index, author_quotes);
     };
 
     this.getQuoteStats = () => {
@@ -97,8 +99,8 @@ module.exports = function(robot) {
 
         return {
             totalQuotes: quotes.length,
-            authors: authors.uniq(),
-            submitters: submitters.uniq(),
+            authors: [...new Set(authors)],
+            submitters: [...new Set(submitters)],
             mostQuotes: {
                 name: mostQuotes,
                 number: authors.filter(author => author == mostQuotes).length,
