@@ -54,12 +54,13 @@ module.exports = function(robot) {
     };
 
     this.getQuote = (index, quotes = null) => {
+        const fullQuotes = this.getQuotes();
         if (quotes === null) {
-            quotes = this.getQuotes();
+            quotes = fullQuotes;
         }
-        let quote = Object.assign({}, quotes[index]);
-        quote.index = index + 1;
-        return quote;
+        let quote = quotes[index];
+        quote.index = fullQuotes.indexOf(quote) + 1;
+        return Object.assign({}, quote);
     };
 
     this.getRandomQuote = () => {
