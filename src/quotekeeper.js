@@ -94,15 +94,15 @@ module.exports = function(robot) {
 
         return {
             totalQuotes: quotes.length,
-            authors: [...new Set(authors)],
-            submitters: [...new Set(submitters)],
+            authors: authors.uniq(),
+            submitters: submitters.uniq(),
             mostQuotes: {
                 name: mostQuotes,
-                number: authors.count(mostQuotes),
+                number: authors.filter(author => author == mostQuotes).length,
             },
             mostSubmissions: {
                 name: mostSubmissions,
-                number: submitters.count(mostSubmissions,)
+                number: submitters.filter(author => author == mostSubmissions).length,
             },
         };
     };
