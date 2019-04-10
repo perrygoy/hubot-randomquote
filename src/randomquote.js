@@ -47,9 +47,11 @@ module.exports = function(robot) {
         return QuoteKeeper.removeQuote(index);
     };
 
-    this.retrieveQuote = (index = false) => {
-        if (index) {
-            return QuoteKeeper.getQuote(index);
+    this.retrieveQuote = (lookup = false) => {
+        if (/^\d+$/.test(lookup)) {
+            return QuoteKeeper.getQuoteByIndex(lookup);
+        } else if (lookup) {
+            return QuoteKeeper.getQuoteByAuthor(lookup);
         } else {
             return QuoteKeeper.getRandomQuote();
         }
@@ -87,10 +89,10 @@ module.exports = function(robot) {
     });
 
 
-    robot.respond(/quote(?: me)?(?: (\d+))?$/i, response => {
+    robot.respond(/quote(?: me)?(?: ([\d\w]+))?$/i, response => {
         let index = false;
         if (response.match.length > 1) {
-            index = Number(response.match[1]);
+            index = response.match[1];
         }
         let quote = this.retrieveQuote(index);
         if (quote === null) {

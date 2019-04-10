@@ -13,7 +13,8 @@ module.exports = function(robot) {
     this.getQuotes = () => {
         return robot.brain.data.randomquotes || [{
             "quote": "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
-            "author": "hubot-randomquote"
+            "author": "hubot-randomquote",
+            "submitter": "hubot-randomquote"
         }];
     };
 
@@ -46,25 +47,35 @@ module.exports = function(robot) {
         return quote;
     };
 
-    this.getRandomQuote = () => {
-        let quotes = this.getQuotes();
-        if (quotes.length == 0) {
-            return null;
-        }
-        let index = randomInt(quotes.length);
+    this.getQuote = index => {
+        const quotes = this.getQuotes();
         let quote = Object.assign({}, quotes[index]);
-
         quote.index = index + 1;
         return quote;
     };
 
-    this.getQuote = index => {
+    this.getRandomQuote = () => {
+        const quotes = this.getQuotes();
+        if (quotes.length == 0) {
+            return null;
+        }
+        let index = randomInt(quotes.length);
+        return this.getQuote(index);
+    };
+
+    this.getQuoteByIndex = index => {
         const quotes = this.getQuotes();
         if (index <= 0 || index > quotes.length) {
             return null;
         }
-        let quote = Object.assign({}, quotes[index - 1]);
-        quote.index = index;
-        return quote;
+        return this.getQuote(index - 1);
+    };
+
+    this.getQuoteByAuthor = author => {
+        const quotes = this.getQuotes();
+        const author_quotes = quotes.filter(quote => quote.author == author)
+
+        let index = randomInt(author_quotes.length);
+        return this.getQuote(index);
     };
 };
