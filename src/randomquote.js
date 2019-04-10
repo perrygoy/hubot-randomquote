@@ -9,7 +9,7 @@
 //   HUBOT_RANDOMQUOTE_LENGTH - how long the quotes can be. Default is 140.
 //
 // Commands:
-//   hubot addquote {quote} [by {user}] - adds the given quote to betsbot,
+//   hubot addquote "{quote}" [by {user}] - adds the given quote to hubot,
 //       crediting the user, or anonymously if no user is given.
 //   hubot removequote {number} - quotes are labeled with a number. If you
 //       later decide to remove a quote, you can do so from that number.
@@ -65,7 +65,7 @@ module.exports = function(robot) {
         return QuoteKeeper.getQuoteStats();
     };
 
-    robot.respond(/addquote ["“”]?(.+?)["“”]?(?: by (.*))/i, response => {
+    robot.respond(/addquote ["“”](.+?)["“”](?: by (.+))/i, response => {
         let quote = response.match[1];
         let author = "_anonymous_";
         if (response.match.length > 2) {
