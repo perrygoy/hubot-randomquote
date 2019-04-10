@@ -51,6 +51,7 @@ module.exports = function(robot) {
     };
 
     this.retrieveQuote = (lookup = false) => {
+        robot.logger.info(`Retrieving a quote with lookup: ${lookup}`);
         if (/^\d+$/.test(lookup)) {
             return QuoteKeeper.getQuoteByIndex(lookup);
         } else if (lookup) {
@@ -114,9 +115,9 @@ module.exports = function(robot) {
         const stats = this.retrieveQuoteStats();
         let message = '_Quote Repository Stats_:\n';
         message += `>*Total Quotes*: ${stats.totalQuotes}\n`;
-        message += `>*Authors*: ${stats.authors}\n`;
+        message += `>*Authors*: ${stats.authors.join(", ")}\n`;
         message += `>  - *Most Quoted*: ${stats.mostQuotes.name}, ${stats.mostQuotes.number} quotes!\n`;
-        message += `>*Submitters*: ${stats.submitters}\n`;
+        message += `>*Submitters*: ${stats.submitters.join(", ")}\n`;
         message += `>  - *Most Submitted*: ${stats.mostSubmissions.name}, ${stats.mostSubmissions.number} quotes!\n`;
 
         response.send(message);

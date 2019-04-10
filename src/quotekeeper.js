@@ -61,6 +61,7 @@ module.exports = function(robot) {
     };
 
     this.getRandomQuote = () => {
+        robot.logger.info(`Getting a random quote.`);
         const quotes = this.getQuotes();
         if (quotes.length == 0) {
             return null;
@@ -70,6 +71,7 @@ module.exports = function(robot) {
     };
 
     this.getQuoteByIndex = index => {
+        robot.logger.info(`Getting quote by index: ${index}`);
         const quotes = this.getQuotes();
         if (index <= 0 || index > quotes.length) {
             return null;
@@ -78,6 +80,7 @@ module.exports = function(robot) {
     };
 
     this.getQuoteByAuthor = author => {
+        robot.logger.info(`Getting quote by author: ${author}`);
         const quotes = this.getQuotes();
         const author_quotes = quotes.filter(quote => quote.author == author)
 
