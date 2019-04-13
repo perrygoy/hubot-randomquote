@@ -118,7 +118,7 @@ module.exports = function(robot) {
             let numQuotes = this.getNumQuotes();
             response.send(`Sorry, I can't map that index to a quote. I currently know ${numQuotes} quotes.`);
         } else {
-            response.send(this.stringifyQuote(quote)));
+            response.send(this.stringifyQuote(quote));
         }
     });
 
