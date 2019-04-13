@@ -17,6 +17,10 @@
 //       number was supplied, get that specific quote. If an author was
 //       supplied, get a random quote by that author.
 //   hubot quotestats - show some nifty stats about the stored quotes!
+//   hubot fixauthor "oldAuthor" "newAuthor" - changes all quotes submitted
+//       for oldAuthor to be credited to newAuthor instead.
+//   hubot revertfixes - undo all edits made by "fixauthor" and return quotes
+//       to their original credits.
 //
 // Author:
 //   Perry Goy https://github.com/perrygoy
@@ -126,7 +130,7 @@ module.exports = function(robot) {
         }
     });
 
-    robot.respond(/fixauthor ([\w]+) ([\w]+)$/i, response => {
+    robot.respond(/fixauthor ["“”]?([\w\s]+)["“”]?\s+["“”]?([\w\s]+)["“”]?$/i, response => {
         const oldAuthor = response.match[1];
         const newAuthor = response.match[2];
         const numQuotes = this.fixAuthor(oldAuthor, newAuthor);
