@@ -130,12 +130,16 @@ module.exports = function(robot) {
         }
     });
 
-    robot.respond(/fixauthor ["“”]?([\w\s]+)["“”]?\s+["“”]?([\w\s]+)["“”]?$/i, response => {
+    robot.respond(/fixauthor ["“”]?(.+?)["“”]?\s+["“”]?(.+?)["“”]?$/i, response => {
         const oldAuthor = response.match[1];
         const newAuthor = response.match[2];
         const numQuotes = this.fixAuthor(oldAuthor, newAuthor);
 
-        response.send(`OK! Number of quotes updated: ${numQuotes}`);
+        if (numQuotes == 0) {
+            response.send(`Sorry, I don't know any quotes by ${oldAuthor}.`);
+        } else {
+            response.send(`OK! Number of quotes updated: ${numQuotes}`);
+        }
     });
 
     robot.respond(/revertfixes$/i, response => {
