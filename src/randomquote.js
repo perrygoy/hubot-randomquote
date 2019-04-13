@@ -109,14 +109,18 @@ module.exports = function(robot) {
     });
 
     robot.respond(/quote(?: me)?(?: ([\d\w]+))?$/i, response => {
-        let index = false;
+        let lookup = false;
         if (response.match.length > 1) {
-            index = response.match[1];
+            lookup = response.match[1];
         }
-        let quote = this.retrieveQuote(index);
+        let quote = this.retrieveQuote(lookup);
         if (quote === null) {
-            let numQuotes = this.getNumQuotes();
-            response.send(`Sorry, I can't map that index to a quote. I currently know ${numQuotes} quotes.`);
+            if (/^\d+$/.test(lookup)) {
+                let numQuotes = this.getNumQuotes();
+                response.send(`Sorry, I can't map that index to a quote. I currently know ${numQuotes} quotes.`);
+            } else {
+                response.send(`Sorry, I don't know any quotes by ${lookup}.`);
+            }
         } else {
             response.send(this.stringifyQuote(quote));
         }

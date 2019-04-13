@@ -108,6 +108,9 @@ module.exports = function(robot) {
         const quotes = this.getQuotes();
         const author_quotes = quotes.filter(quote => this.getAuthor(quote) == author)
 
+        if (author_quotes.length == 0) {
+            return null;
+        }
         let index = randomInt(author_quotes.length);
         return this.getQuote(index, author_quotes);
     };
