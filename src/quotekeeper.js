@@ -20,12 +20,17 @@ module.exports = function(robot) {
         return robot.brain.data.randomquotes || [{
             quote: "Hello! This is a default quote. You can add a new quote by saying `addquote \"quote\" by user`, and remove this one by saying `removequote 1`.",
             author: "hubot-randomquote",
+            fixedAuthor: null,
             submitter: "hubot-randomquote"
         }];
     };
 
     this.getNumQuotes = () => {
         return this.getQuotes().length;
+    };
+
+    this.getAuthor = quote => {
+        return (!quote.fixedAuthor ? quote.author : quote.fixedAuthor);
     };
 
     this.save = quotes => {
@@ -51,6 +56,22 @@ module.exports = function(robot) {
 
         this.save(quotes);
         return quote;
+    };
+
+    this.fixAuthor = (oldAuthor, newAuthor) => {
+        let quotes = this.getQuotes();
+        let quotesToChange = quotes.filter(quote => this.getAuthor(quote) == oldAuthor)
+        quotesToChange.map(quote => quote.fixedAuthor = newAuthor);
+
+        this.save(quotes);
+        return quotesToChange.length
+    };
+
+    this.revertFixes = () => {
+        let quotes = this.getQuotes();
+        quotes.map(quote => quote.fixedAuthor = null);
+
+        this.save(quotes);
     };
 
     this.getQuote = (index, quotes = null) => {
@@ -85,7 +106,7 @@ module.exports = function(robot) {
     this.getQuoteByAuthor = author => {
         robot.logger.info(`Getting quote by author: ${author}`);
         const quotes = this.getQuotes();
-        const author_quotes = quotes.filter(quote => quote.author == author)
+        const author_quotes = quotes.filter(quote => this.getAuthor(quote) == author)
 
         let index = randomInt(author_quotes.length);
         return this.getQuote(index, author_quotes);
@@ -93,7 +114,7 @@ module.exports = function(robot) {
 
     this.getQuoteStats = () => {
         const quotes = this.getQuotes();
-        const authors = quotes.map(quote => quote.author);
+        const authors = quotes.map(quote => this.getAuthor(quote));
         const mostQuotes = mode(authors);
         const submitters = quotes.map(quote => quote.submitter);
         const mostSubmissions = mode(submitters);

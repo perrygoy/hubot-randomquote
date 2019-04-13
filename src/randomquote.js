@@ -50,6 +50,14 @@ module.exports = function(robot) {
         return QuoteKeeper.removeQuote(index);
     };
 
+    this.fixAuthor = (oldAuthor, newAuthor) => {
+        return QuoteKeeper.fixAuthor(oldAuthor, newAuthor);
+    };
+
+    this.revertFixes = () => {
+        return QuoteKeeper.revertFixes();
+    };
+
     this.retrieveQuote = (lookup = false) => {
         robot.logger.info(`Retrieving a quote with lookup: ${lookup}`);
         if (/^\d+$/.test(lookup)) {
@@ -64,6 +72,8 @@ module.exports = function(robot) {
     this.retrieveQuoteStats = () => {
         return QuoteKeeper.getQuoteStats();
     };
+
+    // responses
 
     robot.respond(/addquote ["“”](.+?)["“”](?: by (.+))/i, response => {
         let quote = response.match[1];
@@ -82,7 +92,6 @@ module.exports = function(robot) {
         response.send(`OK, added! Total quotes stored: ${numQuotes}`);
     });
 
-
     robot.respond(/removequote (\d+)/i, response => {
         let index = Number(response.match[1]);
         if (index <= 0) {
@@ -90,11 +99,10 @@ module.exports = function(robot) {
             return;
         }
 
-        let numQuotes = this.getNumQuotes();
         let quote = this.removeQuote(index);
+        let numQuotes = this.getNumQuotes();
         response.send(`OK, stricken! "${quote.quote}" is gone. Total quotes remaining: ${numQuotes}`);
     });
-
 
     robot.respond(/quote(?: me)?(?: ([\d\w]+))?$/i, response => {
         let index = false;
@@ -110,6 +118,18 @@ module.exports = function(robot) {
         }
     });
 
+    robot.respond(/fixauthor ([\w]+) ([\w]+)$/i, response => {
+        const oldAuthor = response.match[1];
+        const newAuthor = response.match[2];
+        const numQuotes = this.fixAuthor(oldAuthor, newAuthor);
+
+        response.send(`OK! Number of quotes updated: ${numQuotes}`);
+    });
+
+    robot.respond(/revertfixes$/i, response => {
+        this.revertFixes();
+        response.send(`OK! All fixed authors reverted to their originally submitted names.`);
+    });
 
     robot.respond(/quotestats$/i, response => {
         const stats = this.retrieveQuoteStats();
