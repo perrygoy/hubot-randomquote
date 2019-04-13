@@ -73,6 +73,10 @@ module.exports = function(robot) {
         return QuoteKeeper.getQuoteStats();
     };
 
+    this.stringifyQuote = quote => {
+        return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)}`;
+    };
+
     // responses
 
     robot.respond(/addquote ["“”](.+?)["“”](?: by (.+))/i, response => {
@@ -114,7 +118,7 @@ module.exports = function(robot) {
             let numQuotes = this.getNumQuotes();
             response.send(`Sorry, I can't map that index to a quote. I currently know ${numQuotes} quotes.`);
         } else {
-            response.send(`*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${quote.author}`);
+            response.send(this.stringifyQuote(quote)));
         }
     });
 
