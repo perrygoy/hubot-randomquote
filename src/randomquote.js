@@ -115,7 +115,7 @@ module.exports = function(robot) {
     robot.respond(/quote(?: ?me)?(?: (.+))?$/i, response => {
         let lookup = false;
         if (response.match.length > 1) {
-            lookup = response.match[1];
+            lookup = this.stripTag(response.match[1]);
         }
         let quote = this.retrieveQuote(lookup);
         if (quote === null) {
