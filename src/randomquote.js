@@ -112,7 +112,7 @@ module.exports = function(robot) {
         response.send(`OK, stricken! "${quote.quote}" is gone. Total quotes remaining: ${numQuotes}`);
     });
 
-    robot.respond(/quote(?: me)?(?: ([\d\w]+))?$/i, response => {
+    robot.respond(/quote(?: ?me)?(?: (.+))?$/i, response => {
         let lookup = false;
         if (response.match.length > 1) {
             lookup = response.match[1];
