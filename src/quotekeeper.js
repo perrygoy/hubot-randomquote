@@ -127,7 +127,7 @@ module.exports = function(robot) {
         const mostQuotes = mode(authors);
         const submitters = quotes.map(quote => quote.submitter);
         const mostSubmissions = mode(submitters);
-        const mostEuphoric = mode(quotes.filter(quote => quote.submitter == this.getAuthor(quote)).map(quote => this.getAuthor(quote));
+        const mostEuphoric = mode(quotes.filter(quote => quote.submitter == this.getAuthor(quote)).map(quote => this.getAuthor(quote)));
 
         return {
             totalQuotes: quotes.length,
