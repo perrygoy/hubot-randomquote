@@ -46,7 +46,7 @@ module.exports = function(robot) {
                 fixedAuthor = quote.fixedAuthor;
             }
         }
-        let numQuotes = quotes.push({quote: quote, author: author, fixedAuthor: fixedauthor, submitter: submitter});
+        let numQuotes = quotes.push({quote: quote, author: author, fixedAuthor: fixedAuthor, submitter: submitter});
 
         this.save(quotes);
         return numQuotes;
