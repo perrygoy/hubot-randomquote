@@ -8,6 +8,9 @@ function randomInt(max_ind) {
 };
 
 function mode(array) {
+    if (array.length == 0) {
+        return null;
+    }
     return array.reduce(
         (a, b, index, array) =>
         (array.filter(v => v === a).length >= array.filter(v => v === b).length ? a : b)
