@@ -38,7 +38,7 @@ module.exports = function(robot) {
         robot.brain.emit('save', robot.brain.data);
     };
 
-    this.addQuote = (quote, author, submitter) => {
+    this.addQuote = (quoteText, author, submitter) => {
         let quotes = this.getQuotes();
         let fixedAuthor = null;
         for (quote of quotes) {
@@ -46,7 +46,7 @@ module.exports = function(robot) {
                 fixedAuthor = quote.fixedAuthor;
             }
         }
-        let numQuotes = quotes.push({quote: quote, author: author, fixedAuthor: fixedAuthor, submitter: submitter});
+        let numQuotes = quotes.push({quote: quoteText, author: author, fixedAuthor: fixedAuthor, submitter: submitter});
 
         this.save(quotes);
         return numQuotes;
