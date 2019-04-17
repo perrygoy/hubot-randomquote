@@ -155,7 +155,7 @@ module.exports = function(robot) {
         message += `>  - *Most Quoted*: ${stats.mostQuotes.name}, ${stats.mostQuotes.number} quotes!\n`;
         message += `>*Submitters*: ${stats.submitters.join(", ")}\n`;
         message += `>  - *Most Submitted*: ${stats.mostSubmissions.name}, ${stats.mostSubmissions.number} quotes!\n`;
-        message += `>  - *Most Euphoric*: ${stats.mostEuphoric.name}, ${stats.mostEuphoric.number} quotes!\n`;
+        message += `>  - *Most Euphoric*: ${stats.mostEuphoric.name} :face_with_rolling_eyes: \n`;
 
         response.send(message);
     });
