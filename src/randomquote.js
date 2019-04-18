@@ -43,6 +43,9 @@ module.exports = function(robot) {
     };
 
     this.stripTag = name => {
+        if (typeof name !== "string") {
+            return name;
+        }
         return (name[0] === '@' ? name.slice(1) : name);
     };
 
