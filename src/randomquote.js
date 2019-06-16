@@ -57,6 +57,22 @@ module.exports = function(robot) {
         return QuoteKeeper.removeQuote(index);
     };
 
+    this.searchQuotes = searchTerm => {
+        return QuoteKeeper.searchQuotes(searchTerm);
+    };
+
+    this.truncateQuote = (quote, fulcrum) => {
+        const words = quote.split(" ");
+        let radix = 0;
+        for (const [i, word] of words.entries()) {
+            if (word.includes(fulcrum)) {
+                radix = i;
+                break;
+            }
+        }
+        return `${radix > 2 ? '...' : ''}${words.slice(Math.max(0, radix - 2), Math.min(radix + 3, words.length)).join(' ')}${radix < words.length - 3 ? '...' : ''}`;
+    };
+
     this.fixAuthor = (oldAuthor, newAuthor) => {
         return QuoteKeeper.fixAuthor(oldAuthor, newAuthor);
     };
@@ -133,11 +149,28 @@ module.exports = function(robot) {
         }
     });
 
+    robot.respond(/quotesearch (.+)/i, response => {
+        let searchTerm = response.match[1];
+        if (searchTerm.length < 3) {
+            response.send(`Sorry, I can't search using a term less than 3 characters long.`);
+            return;
+        }
+        let quotes = this.searchQuotes(searchTerm);
+        if (quotes.length == 0) {
+            response.send(`Sorry, I don't know any quotes containing "${searchTerm}".`);
+        } else {
+            let message = `I know ${quotes.length} quote${quotes.length != 1? 's' : ''} about "${searchTerm}":\n`;
+            for (const quote of quotes) {
+                message += `• *${quote.index}*: "${this.truncateQuote(quote.quote, searchTerm)}" by ${QuoteKeeper.getAuthor(quote)}\n`;
+            }
+            response.send(message);
+        }
+    });
+
     robot.respond(/fixauthor ["“”]?(.+?)["“”]?\s+["“”]?(.+?)["“”]?$/i, response => {
         const oldAuthor = response.match[1];
         const newAuthor = response.match[2];
         const numQuotes = this.fixAuthor(oldAuthor, newAuthor);
-
         if (numQuotes == 0) {
             response.send(`Sorry, I don't know any quotes by ${oldAuthor}.`);
         } else {
@@ -161,8 +194,6 @@ module.exports = function(robot) {
         if (stats.mostEuphoric.name) {
             message += `>  - *Most Euphoric*: ${stats.mostEuphoric.name} :face_with_rolling_eyes: \n`;
         }
-
         response.send(message);
     });
-
 };

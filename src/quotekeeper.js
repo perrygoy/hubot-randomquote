@@ -124,6 +124,13 @@ module.exports = function(robot) {
         return this.getQuote(index, author_quotes);
     };
 
+    this.searchQuotes = searchTerm => {
+        robot.logger.info(`Searching for quotes containing ${searchTerm}`);
+        const quotes = this.getQuotes();
+        let bounty = quotes.filter(quote => quote.quote.includes(searchTerm));
+        return bounty.map(quote => this.getQuote(quotes.indexOf(quote), quotes));
+    };
+
     this.getQuoteStats = () => {
         const quotes = this.getQuotes();
         const authors = quotes.map(quote => this.getAuthor(quote));
