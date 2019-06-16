@@ -9,18 +9,13 @@
 //   HUBOT_RANDOMQUOTE_LENGTH - how long the quotes can be. Default is 140.
 //
 // Commands:
-//   hubot addquote "{quote}" [by {user}] - adds the given quote to hubot,
-//       crediting the user, or anonymously if no user is given.
-//   hubot removequote {number} - quotes are labeled with a number. If you
-//       later decide to remove a quote, you can do so from that number.
-//   hubot quote {number, author, or nothing} - get a random quote! If a
-//       number was supplied, get that specific quote. If an author was
-//       supplied, get a random quote by that author.
+//   hubot addquote "{quote}" [by {user}] - adds the given quote to hubot, crediting the user, or anonymously if no user is given.
+//   hubot removequote {number} - quotes are labeled with a number. If you later decide to remove a quote, you can do so from that number.
+//   hubot quote {number, author, or nothing} - get a random quote! If a number was supplied, get that specific quote. If an author was supplied, get a random quote by that author.
+//   hubot quotesearch {term} - searches the quotes for
 //   hubot quotestats - show some nifty stats about the stored quotes!
-//   hubot fixauthor "oldAuthor" "newAuthor" - changes all quotes submitted
-//       for oldAuthor to be credited to newAuthor instead.
-//   hubot revertfixes - undo all edits made by "fixauthor" and return quotes
-//       to their original credits.
+//   hubot fixauthor "oldAuthor" "newAuthor" - changes all quotes submitted for oldAuthor to be credited to newAuthor instead.
+//   hubot revertfixes - undo all edits made by "fixauthor" and return quotes to their original credits.
 //
 // Author:
 //   Perry Goy https://github.com/perrygoy
@@ -149,7 +144,7 @@ module.exports = function(robot) {
         }
     });
 
-    robot.respond(/quotesearch (.+)/i, response => {
+    robot.respond(/quotesearch ([^\s]+)/i, response => {
         let searchTerm = response.match[1];
         if (searchTerm.length < 3) {
             response.send(`Sorry, I can't search using a term less than 3 characters long.`);
