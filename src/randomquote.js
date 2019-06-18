@@ -162,7 +162,7 @@ module.exports = function(robot) {
         }
     });
 
-    robot.respond(/fixauthor ["“”]?(.+?)["“”]?\s+["“”]?(.+?)["“”]?$/i, response => {
+    robot.respond(/fixauthor ["“”]?([^"])["“”]?\s+["“”]?([^"])["“”]?$/i, response => {
         const oldAuthor = response.match[1];
         const newAuthor = response.match[2];
         const numQuotes = this.fixAuthor(oldAuthor, newAuthor);
