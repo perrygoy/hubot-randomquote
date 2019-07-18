@@ -132,7 +132,7 @@ module.exports = function(robot) {
     this.searchQuotes = searchTerm => {
         robot.logger.info(`Searching for quotes containing ${searchTerm}`);
         const quotes = this.getQuotes();
-        let bounty = quotes.filter(quote => quote.quote.includes(searchTerm));
+        let bounty = quotes.filter(quote => quote.quote.toLowerCase().includes(searchTerm.toLowerCase()));
         return bounty.map(quote => this.getQuote(quotes.indexOf(quote), quotes));
     };
 

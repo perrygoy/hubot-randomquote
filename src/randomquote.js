@@ -57,15 +57,10 @@ module.exports = function(robot) {
     };
 
     this.truncateQuote = (quote, fulcrum) => {
-        const words = quote.split(" ");
-        let radix = 0;
-        for (const [i, word] of words.entries()) {
-            if (word.includes(fulcrum)) {
-                radix = i;
-                break;
-            }
-        }
-        return `${radix > 2 ? '...' : ''}${words.slice(Math.max(0, radix - 2), Math.min(radix + 3, words.length)).join(' ')}${radix < words.length - 3 ? '...' : ''}`;
+        const startOfFulcrum = quote.indexOf(fulcrum);
+        const endOfFulcrum = startOfFulcrum + fulcrum.length;
+        const padding = Math.max(25 - fulcrum.length, 0);
+        return `${startOfFulcrum > padding ? '...' : ''}${quote.slice(Math.max(0, startOfFulcrum - padding), Math.min(endOfFulcrum + padding, quote.length))}${endOfFulcrum < quote.length - padding ? '...' : ''}`;
     };
 
     this.fixAuthor = (oldAuthor, newAuthor) => {
@@ -144,7 +139,7 @@ module.exports = function(robot) {
         }
     });
 
-    robot.respond(/quotesearch ([^\s]+)/i, response => {
+    robot.respond(/quotesearch\s+(.+)/i, response => {
         let searchTerm = response.match[1];
         if (searchTerm.length < 3) {
             response.send(`Sorry, I can't search using a term less than 3 characters long.`);
