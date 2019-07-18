@@ -92,7 +92,7 @@ module.exports = function(robot) {
     };
 
     this.stringifyQuote = quote => {
-        return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)}`;
+        return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)} (${quote.indexByAuthor}/${quote.totalByAuthor})`;
     };
 
     // responses

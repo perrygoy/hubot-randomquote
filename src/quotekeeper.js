@@ -88,9 +88,14 @@ module.exports = function(robot) {
         if (quotes === null) {
             quotes = fullQuotes;
         }
-        let quote = quotes[index];
-        quote.index = fullQuotes.indexOf(quote) + 1;
-        return Object.assign({}, quote);
+        let chosenQuote = quotes[index];
+        let quoteData = Object.assign({}, chosenQuote);
+        let authorQuotes = quotes.filter(quote => quote.author == chosenQuote.author);
+
+        quoteData.index = fullQuotes.indexOf(chosenQuote) + 1;
+        quoteData.indexByAuthor = authorQuotes.indexOf(chosenQuote) + 1;
+        quoteData.totalByAuthor = authorQuotes.length;
+        return quoteData;
     };
 
     this.getRandomQuote = () => {
