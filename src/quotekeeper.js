@@ -120,7 +120,7 @@ module.exports = function(robot) {
     this.getQuoteByAuthor = author => {
         robot.logger.info(`Getting quote by author: ${author}`);
         const quotes = this.getQuotes();
-        const author_quotes = quotes.filter(quote => this.getAuthor(quote) == author)
+        const author_quotes = quotes.filter(quote => this.getAuthor(quote).toLowerCase() == author.toLowerCase())
 
         if (author_quotes.length == 0) {
             return null;
