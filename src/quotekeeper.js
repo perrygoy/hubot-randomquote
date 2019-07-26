@@ -90,7 +90,7 @@ module.exports = function(robot) {
         }
         let chosenQuote = quotes[index];
         let quoteData = Object.assign({}, chosenQuote);
-        let authorQuotes = quotes.filter(quote => quote.author == chosenQuote.author);
+        let authorQuotes = quotes.filter(quote => this.getAuthor(quote) == this.getAuthor(chosenQuote));
 
         quoteData.index = fullQuotes.indexOf(chosenQuote) + 1;
         quoteData.indexByAuthor = authorQuotes.indexOf(chosenQuote) + 1;
