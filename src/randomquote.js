@@ -10,9 +10,13 @@
 //
 // Commands:
 //   hubot addquote "{quote}" [by {user}] - adds the given quote to hubot, crediting the user, or anonymously if no user is given.
+//   !qadd "{quote}" [by {user}] - shorthand for the above
 //   hubot removequote {number} - quotes are labeled with a number. If you later decide to remove a quote, you can do so from that number.
+//   !qremove {number} - shorthand for the above
 //   hubot quote {number, author, or nothing} - get a random quote! If a number was supplied, get that specific quote. If an author was supplied, get a random quote by that author.
+//   !quote {number, author, or nothing} - shorthand for the above
 //   hubot quotesearch {term} - searches the quotes for the specified term.
+//   !qsearch {term} - shorthand for the above
 //   hubot quotestats - show some nifty stats about the stored quotes!
 //   hubot fixauthor "oldAuthor" "newAuthor" - changes all quotes submitted for oldAuthor to be credited to newAuthor instead.
 //   hubot revertfixes - undo all edits made by "fixauthor" and return quotes to their original credits.
@@ -57,7 +61,7 @@ module.exports = function(robot) {
     };
 
     this.truncateQuote = (quote, fulcrum) => {
-        const startOfFulcrum = quote.indexOf(fulcrum);
+        const startOfFulcrum = quote.toLowerCase().indexOf(fulcrum.toLowerCase());
         const endOfFulcrum = startOfFulcrum + fulcrum.length;
         const padding = Math.max(25 - fulcrum.length, 0);
         return `${startOfFulcrum > padding ? '...' : ''}${quote.slice(Math.max(0, startOfFulcrum - padding), Math.min(endOfFulcrum + padding, quote.length))}${endOfFulcrum < quote.length - padding ? '...' : ''}`;
@@ -90,43 +94,35 @@ module.exports = function(robot) {
         return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)} (${quote.indexByAuthor} of ${quote.totalByAuthor})`;
     };
 
-    // responses
+    // handlers
 
-    robot.respond(/addquote ["“”](.+?)["“”](?: by (.+))/i, response => {
-        let quote = response.match[1];
-        let author = "_anonymous_";
-        if (response.match.length > 2) {
-            author = this.stripTag(response.match[2]);
-        }
-        let submitter = this.getUsername(response);
+    this.handleAddQuote = (response, quote, author = "_anonymous_") => {
+        author = this.stripTag(author);
+        const submitter = this.getUsername(response);
 
         if (quote.length > 140) {
             response.send(`Sorry friend, that quote is too long at ${quote.length} characters. I can only remember ${QUOTE_MAXLENGTH} characters maximum.`);
             return;
         }
 
-        let numQuotes = this.addQuote(quote, author, submitter);
+        const numQuotes = this.addQuote(quote, author, submitter);
         response.send(`OK, added! Total quotes stored: ${numQuotes}`);
-    });
+    };
 
-    robot.respond(/removequote (\d+)/i, response => {
-        let index = Number(response.match[1]);
+    this.handleRemoveQuote = (response, index) => {
         if (index <= 0) {
             response.send("That number is too low. Nice try!");
             return;
         }
 
-        let quote = this.removeQuote(index);
-        let numQuotes = this.getNumQuotes();
+        const quote = this.removeQuote(index);
+        const numQuotes = this.getNumQuotes();
         response.send(`OK, stricken! "${quote.quote}" is gone. Total quotes remaining: ${numQuotes}`);
-    });
+    };
 
-    robot.respond(/quote(?: ?me)?(?: (.+))?$/i, response => {
-        let lookup = false;
-        if (response.match.length > 1) {
-            lookup = this.stripTag(response.match[1]);
-        }
-        let quote = this.retrieveQuote(lookup);
+    this.handleGetQuote = (response, lookup = false) => {
+        lookup = this.stripTag(response.match[1]);
+        const quote = this.retrieveQuote(lookup);
         if (quote === null) {
             if (/^\d+$/.test(lookup)) {
                 let numQuotes = this.getNumQuotes();
@@ -137,15 +133,14 @@ module.exports = function(robot) {
         } else {
             response.send(this.stringifyQuote(quote));
         }
-    });
+    };
 
-    robot.respond(/quotesearch\s+(.+)/i, response => {
-        let searchTerm = response.match[1];
+    this.handleQuoteSearch = (response, searchTerm) => {
         if (searchTerm.length < 3) {
             response.send(`Sorry, I can't search using a term less than 3 characters long.`);
             return;
         }
-        let quotes = this.searchQuotes(searchTerm);
+        const quotes = this.searchQuotes(searchTerm);
         if (quotes.length == 0) {
             response.send(`Sorry, I don't know any quotes containing "${searchTerm}".`);
         } else {
@@ -155,25 +150,23 @@ module.exports = function(robot) {
             }
             response.send(message);
         }
-    });
+    };
 
-    robot.respond(/fixauthor ["“”]?([^"]+)["“”]?\s+["“”]?([^"]+)["“”]?$/i, response => {
-        const oldAuthor = response.match[1];
-        const newAuthor = response.match[2];
+    this.handleFixAuthor = (response, oldAuthor, newAuthor) => {
         const numQuotes = this.fixAuthor(oldAuthor, newAuthor);
         if (numQuotes == 0) {
             response.send(`Sorry, I don't know any quotes by ${oldAuthor}.`);
         } else {
             response.send(`OK! Number of quotes updated: ${numQuotes}`);
         }
-    });
+    };
 
-    robot.respond(/revertfixes$/i, response => {
+    this.handleRevertFixes = (response) => {
         this.revertFixes();
         response.send(`OK! All fixed authors reverted to their originally submitted names.`);
-    });
+    };
 
-    robot.respond(/quotestats$/i, response => {
+    this.handleQuoteStats = (response) => {
         const stats = this.retrieveQuoteStats();
         let message = '_Quote Repository Stats_:\n';
         message += `>*Total Quotes*: ${stats.totalQuotes}\n`;
@@ -185,5 +178,51 @@ module.exports = function(robot) {
             message += `>  - *Most Euphoric*: ${stats.mostEuphoric.name} :face_with_rolling_eyes: \n`;
         }
         response.send(message);
+    };
+
+    // responses
+
+    robot.respond(/addquote ["“”](.+?)["“”](?: by (.+))/i, response => {
+        this.handleAddQuote(response, response.match[1], response.match[2]);
+    });
+
+    robot.hear(/^!qadd ["“”](.+?)["“”](?: by (.+))/i, response => {
+        this.handleAddQuote(response, response.match[1], response.match[2]);
+    });
+
+    robot.respond(/removequote (\d+)/i, response => {
+        this.handleRemoveQuote(response, Number(response.match[1]));
+    });
+
+    robot.hear(/^!qremove (\d+)/i, response => {
+        this.handleRemoveQuote(response, Number(response.match[1]));
+    });
+
+    robot.respond(/quote(?: ?me)?(?: (.+))?$/i, response => {
+        this.handleGetQuote(response, response.match[1])
+    });
+
+    robot.hear(/^!quote(?: ?me)?(?: (.+))?$/i, response => {
+        this.handleGetQuote(response, response.match[1])
+    });
+
+    robot.respond(/quotesearch\s+(.+)/i, response => {
+        this.handleQuoteSearch(response, response.match[1]);
+    });
+
+    robot.hear(/^!qsearch\s+(.+)/i, response => {
+        this.handleQuoteSearch(response, response.match[1]);
+    });
+
+    robot.respond(/fixauthor ["“”]?([^"]+)["“”]?\s+["“”]?([^"]+)["“”]?$/i, response => {
+        this.handleFixAuthor(response, response.match[1], response.match[2]);
+    });
+
+    robot.respond(/revertfixes$/i, response => {
+        this.handleRevertFixes(response);
+    });
+
+    robot.respond(/quotestats$/i, response => {
+        this.handleQuoteStats(response);
     });
 };
