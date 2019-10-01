@@ -187,7 +187,7 @@ module.exports = function(robot) {
     });
 
     robot.hear(/^!(qadd|addquote) ["“”](.+?)["“”](?: by (.+))/i, response => {
-        this.handleAddQuote(response, response.match[1], response.match[2]);
+        this.handleAddQuote(response, response.match[2], response.match[3]);
     });
 
     robot.respond(/removequote (\d+)/i, response => {
@@ -195,7 +195,7 @@ module.exports = function(robot) {
     });
 
     robot.hear(/^!(qremove|removequote) (\d+)/i, response => {
-        this.handleRemoveQuote(response, Number(response.match[1]));
+        this.handleRemoveQuote(response, Number(response.match[2]));
     });
 
     robot.respond(/quote(?: ?me)?(?: (.+))?$/i, response => {
