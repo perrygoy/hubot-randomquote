@@ -186,7 +186,7 @@ module.exports = function(robot) {
         this.handleAddQuote(response, response.match[1], response.match[2]);
     });
 
-    robot.hear(/^!qadd ["“”](.+?)["“”](?: by (.+))/i, response => {
+    robot.hear(/^!(qadd|addquote) ["“”](.+?)["“”](?: by (.+))/i, response => {
         this.handleAddQuote(response, response.match[1], response.match[2]);
     });
 
@@ -194,7 +194,7 @@ module.exports = function(robot) {
         this.handleRemoveQuote(response, Number(response.match[1]));
     });
 
-    robot.hear(/^!qremove (\d+)/i, response => {
+    robot.hear(/^!(qremove|removequote) (\d+)/i, response => {
         this.handleRemoveQuote(response, Number(response.match[1]));
     });
 
@@ -210,7 +210,7 @@ module.exports = function(robot) {
         this.handleQuoteSearch(response, response.match[1]);
     });
 
-    robot.hear(/^!qsearch\s+(.+)/i, response => {
+    robot.hear(/^!(qsearch|quotesearch|searchquotes?)\s+(.+)/i, response => {
         this.handleQuoteSearch(response, response.match[1]);
     });
 
@@ -223,6 +223,10 @@ module.exports = function(robot) {
     });
 
     robot.respond(/quotestats$/i, response => {
+        this.handleQuoteStats(response);
+    });
+
+    robot.hear(/^!(qstats|quotestats)$/i, response => {
         this.handleQuoteStats(response);
     });
 };
