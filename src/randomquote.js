@@ -211,7 +211,7 @@ module.exports = function(robot) {
     });
 
     robot.hear(/^!(qsearch|quotesearch|searchquotes?)\s+(.+)/i, response => {
-        this.handleQuoteSearch(response, response.match[1]);
+        this.handleQuoteSearch(response, response.match[2]);
     });
 
     robot.respond(/fixauthor ["“”]?([^"]+)["“”]?\s+["“”]?([^"]+)["“”]?$/i, response => {
