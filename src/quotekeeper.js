@@ -12,7 +12,7 @@ function mode(array) {
         return null;
     }
     return array.reduce(
-        (a, b, index, array) =>
+        (a, b, _, array) =>
         (array.filter(v => v === a).length >= array.filter(v => v === b).length ? a : b)
     );
 };
@@ -49,7 +49,15 @@ module.exports = function(robot) {
                 fixedAuthor = quote.fixedAuthor;
             }
         }
-        let numQuotes = quotes.push({quote: quoteText, author: author, fixedAuthor: fixedAuthor, submitter: submitter});
+        let numQuotes = quotes.push(
+            {
+                quote: quoteText,
+                author: author,
+                fixedAuthor: fixedAuthor,
+                submitter: submitter,
+                timestamp: new Date()
+            }
+        );
 
         this.save(quotes);
         return numQuotes;

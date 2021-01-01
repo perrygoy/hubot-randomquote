@@ -91,7 +91,8 @@ module.exports = function(robot) {
     };
 
     this.stringifyQuote = quote => {
-        return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)} (${quote.indexByAuthor} of ${quote.totalByAuthor})`;
+        const date = quote.timestamp ? `, ${new Date(quote.timestamp).toDateString()}` : '';
+        return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)} (${quote.indexByAuthor} of ${quote.totalByAuthor})${date}`;
     };
 
     // handlers
