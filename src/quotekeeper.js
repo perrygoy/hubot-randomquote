@@ -156,8 +156,8 @@ module.exports = function(robot) {
 
         return {
             totalQuotes: quotes.length,
-            authors: [...new Set(authors)],
-            submitters: [...new Set(submitters)],
+            authors: [...new Set(authors.sort())],
+            submitters: [...new Set(submitters.sort())],
             mostQuotes: {
                 name: mostQuotes,
                 number: authors.filter(author => author == mostQuotes).length,
@@ -168,7 +168,33 @@ module.exports = function(robot) {
             },
             mostEuphoric: {
                 name: mostEuphoric,
-            }
+            },
+        };
+    };
+
+    this.getQuoteStatsFor = author => {
+        robot.logger.info(`Getting quote stats for author: ${author}`);
+        const quotes = this.getQuotes();
+        const author_quotes = quotes.filter(quote => this.getAuthor(quote).toLowerCase() == author.toLowerCase());
+
+        if (author_quotes.length == 0) {
+            return null;
+        }
+
+        let fixAuthors = author_quotes.map(quote => quote.author).filter(ogAuthor => ogAuthor != author);
+        if (fixAuthors.length == 0) {
+            fixAuthors = ["None!"];
+        }
+        let latest = "Pre-historic.";
+        let latestQuote = author_quotes.filter(quote => quote.timestamp).sort().slice(-1)[0];
+        if (latestQuote) {
+            latest = new Date(latestQuote.timestamp).toDateString();
+        }
+
+        return {
+            totalQuotes: author_quotes.length,
+            latest: latest,
+            fixAuthors: [...new Set(fixAuthors.sort())],
         };
     };
 };

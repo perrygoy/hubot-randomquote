@@ -97,6 +97,10 @@ module.exports = function(robot) {
         return QuoteKeeper.getQuoteStats();
     };
 
+    this.retrieveQuoteStatsForAuthor = author => {
+        return QuoteKeeper.getQuoteStatsFor(author);
+    }
+
     this.stringifyQuote = quote => {
         const date = quote.timestamp ? `, ${new Date(quote.timestamp).toDateString()}` : '';
         return `*Quote #${quote.index}*:\n>"${quote.quote}"\n     —${QuoteKeeper.getAuthor(quote)} (${quote.indexByAuthor} of ${quote.totalByAuthor})${date}`;
@@ -189,8 +193,22 @@ module.exports = function(robot) {
         if (stats.mostEuphoric.name) {
             message += `>  - *Most Euphoric*: ${stats.mostEuphoric.name} :face_with_rolling_eyes: \n`;
         }
+        message += 'To retrieve stats on a particular author, use `quotestats authorname`!';
         response.send(message);
     };
+
+    this.handleQuoteStatsForAuthor = (response, author) => {
+        const stats = this.retrieveQuoteStatsForAuthor(author)
+        if (!stats) {
+            response.send(`Sorry, I don't have any quotes by ${author}!`);
+            return;
+        }
+        let message = `_Quote Stats for ${author}_:\n`;
+        message += `>*Total Quotes*: ${stats.totalQuotes}\n`;
+        message += `>*Latest Quote*: ${stats.latest}\n`;
+        message += `>*Fixauthor Settings*: \n> * ${stats.fixAuthors.join("\n> * ")}\n`
+        response.send(message)
+    }
 
     // responses
 
@@ -240,5 +258,13 @@ module.exports = function(robot) {
 
     robot.hear(/^!(qstats|quotestats)$/i, response => {
         this.handleQuoteStats(response);
+    });
+
+    robot.respond(/quotestats (.+)$/i, response => {
+        this.handleQuoteStatsForAuthor(response, response.match[1]);
+    });
+
+    robot.hear(/^!(qstats|quotestats) (.+)$/i, response => {
+        this.handleQuoteStatsForAuthor(response, response.match[2]);
     });
 };
