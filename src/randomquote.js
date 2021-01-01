@@ -118,7 +118,8 @@ module.exports = function(robot) {
 
         const quote = this.removeQuote(index);
         const numQuotes = this.getNumQuotes();
-        response.send(`OK, stricken! "${quote.quote}" is gone. Total quotes remaining: ${numQuotes}`);
+        robot.messageRoom(response.message.user.id, `Quote #${index}, "${quote.quote}" by ${QuoteKeeper.getAuthor(quote)}, is gone.`);
+        response.send(`OK, stricken! Total quotes remaining: ${numQuotes}`)
     };
 
     this.handleGetQuote = (response, lookup = false) => {
