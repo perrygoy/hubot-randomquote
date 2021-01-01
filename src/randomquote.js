@@ -80,6 +80,13 @@ module.exports = function(robot) {
         if (/^\d+$/.test(lookup)) {
             return QuoteKeeper.getQuoteByIndex(lookup);
         } else if (lookup) {
+            if (/ \d+$/.test(lookup)) {
+                const [_, author, quotenum] = lookup.match(/^(.*?) (\d+)$/);
+                let quote = QuoteKeeper.getQuoteByAuthor(author, quotenum - 1);
+                if (quote) {
+                    return quote;
+                }
+            }
             return QuoteKeeper.getQuoteByAuthor(lookup);
         } else {
             return QuoteKeeper.getRandomQuote();
@@ -127,8 +134,11 @@ module.exports = function(robot) {
         const quote = this.retrieveQuote(lookup);
         if (quote === null) {
             if (/^\d+$/.test(lookup)) {
-                let numQuotes = this.getNumQuotes();
+                const numQuotes = this.getNumQuotes();
                 response.send(`Sorry, I can't map that index to a quote. I currently know ${numQuotes} quotes.`);
+            } else if (/\d+$/.test(lookup)) {
+                const author = lookup.match(/^(.*?) (\d+)$/)[1];
+                response.send(`Sorry, ${author} doesn't have that many quotes.`);
             } else {
                 response.send(`Sorry, I don't know any quotes by ${lookup}.`);
             }

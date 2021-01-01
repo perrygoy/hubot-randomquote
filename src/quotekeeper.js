@@ -125,15 +125,17 @@ module.exports = function(robot) {
         return this.getQuote(index - 1);
     };
 
-    this.getQuoteByAuthor = author => {
+    this.getQuoteByAuthor = (author, index = null) => {
         robot.logger.info(`Getting quote by author: ${author}`);
         const quotes = this.getQuotes();
         const author_quotes = quotes.filter(quote => this.getAuthor(quote).toLowerCase() == author.toLowerCase())
 
-        if (author_quotes.length == 0) {
+        if (author_quotes.length == 0 || (index && author_quotes.length <= index)) {
             return null;
         }
-        let index = randomInt(author_quotes.length);
+        if (!index) {
+            index = randomInt(author_quotes.length);
+        }
         return this.getQuote(index, author_quotes);
     };
 
